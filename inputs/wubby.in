@@ -1,0 +1,5 @@
+// The program input for wubby/src/main.leo
+
+[register_namespace]
+public name: Ascii32 { a0: 88u8, a1: 72u8, a2: 84u8, a3: 77u8, a4: 76u8 };
+public uri: Ascii32 { a0: 104u8, a1: 116u8, a2: 116u8, a3: 112u8, a4: 115u8, a5: 58u8, a6: 47u8, a7: 47u8, a8: 119u8, a9: 119u8, a10: 119u8, a11: 46u8, a12: 119u8, a13: 51u8, a14: 46u8, a15: 111u8, a16: 114u8, a17: 103u8, a18: 47u8, a19: 49u8, a20: 57u8, a21: 57u8, a22: 57u8, a23: 47u8, a24: 120u8, a25: 104u8, a26: 116u8, a27: 109u8, a28: 108u8, a29: 47u8 };
