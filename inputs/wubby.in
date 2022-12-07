@@ -1,12 +1,26 @@
 // The program input for wubby/src/main.leo
 
 [main]
-public public_registry: bool = true;
-public domain_name: Ascii32 = Ascii32 { };
-public namespace_name: Ascii32 = Ascii32 { };
-public namespace_uri: Ascii32 = Ascii32 { };
-public element_keyword: Ascii32 = Ascii32 { };
-public element_is_root: Ascii32 = Ascii32 { };
-public attribute_keyword: Ascii32 = Ascii32 { };
-public attribute_is_global: bool = false;
-public attribute_state: Ascii32 = Ascii32 { };
+public identifiers: Identifiers = Identifiers { public_registry: true, collection_id: 0u128, parent_element_id: 0u128, element_id: 0u128, attribute_id: 0u128 };
+public domain: DomainInstance = DomainInstance { 
+    name: Ascii32 { a0: 119u8, a1: 117u8, a2: 98u8, a3: 98u8, a4: 121u8, a5: 0u8, a6: 0u8, a7: 0u8, a8: 0u8, a9: 0u8, a10: 0u8, a11: 0u8, a12: 0u8, a13: 0u8, a14: 0u8, a15: 0u8, a16: 0u8, a17: 0u8, a18: 0u8, a19: 0u8, a20: 0u8, a21: 0u8, a22: 0u8, a23: 0u8, a24: 0u8, a25: 0u8, a26: 0u8, a27: 0u8, a28: 0u8, a29: 0u8, a30: 0u8, a31: 0u8 },
+};
+public namespace: NamespaceInstance = NamespaceInstance {
+    namespace: NamespaceDefintion {
+        name: Ascii32 { a0: 088u8, a1: 072u8, a2: 084u8, a3: 077u8, a4: 0u8, a5: 0u8, a6: 0u8, a7: 0u8, a8: 0u8, a9: 0u8, a10: 0u8, a11: 0u8, a12: 0u8, a13: 0u8, a14: 0u8, a15: 0u8, a16: 0u8, a17: 0u8, a18: 0u8, a19: 0u8, a20: 0u8, a21: 0u8, a22: 0u8, a23: 0u8, a24: 0u8, a25: 0u8, a26: 0u8, a27: 0u8, a28: 0u8, a29: 0u8, a30: 0u8, a31: 0u8 },
+        uri: Ascii32 { a0: 104u8, a1: 116u8, a2: 116u8, a3: 112u8, a4: 115u8, a5: 058u8, a6: 047u8, a7: 047u8, a8: 119u8, a9: 119u8, a10: 119u8, a11: 046u8, a12: 119u8, a13: 051u8, a14: 046u8, a15: 111u8, a16: 114u8, a17: 103u8, a18: 047u8, a19: 049u8, a20: 057u8, a21: 057u8, a22: 057u8, a23: 047u8, a24: 120u8, a25: 104u8, a26: 116u8, a27: 109u8, a28: 108u8, a29: 047u8, a30: 0u8, a31: 0u8 }
+    },
+};
+public element: ElementInstance = ElementInstance {
+    element: ElementDefinition {
+        keyword: Ascii32 { a0: 104u8, a1: 116u8, a2: 109u8, a3: 108u8, a4: 0u8, a5: 0u8, a6: 0u8, a7: 0u8, a8: 0u8, a9: 0u8, a10: 0u8, a11: 0u8, a12: 0u8, a13: 0u8, a14: 0u8, a15: 0u8, a16: 0u8, a17: 0u8, a18: 0u8, a19: 0u8, a20: 0u8, a21: 0u8, a22: 0u8, a23: 0u8, a24: 0u8, a25: 0u8, a26: 0u8, a27: 0u8, a28: 0u8, a29: 0u8, a30: 0u8, a31: 0u8 },
+    },
+    is_root: true,
+};
+public attribute: AttributeInstance = AttributeInstance {
+    attribute: AttributeDefinition {
+        keyword: Ascii32 { a0: 0u8, a1: 0u8, a2: 0u8, a3: 0u8, a4: 0u8, a5: 0u8, a6: 0u8, a7: 0u8, a8: 0u8, a9: 0u8, a10: 0u8, a11: 0u8, a12: 0u8, a13: 0u8, a14: 0u8, a15: 0u8, a16: 0u8, a17: 0u8, a18: 0u8, a19: 0u8, a20: 0u8, a21: 0u8, a22: 0u8, a23: 0u8, a24: 0u8, a25: 0u8, a26: 0u8, a27: 0u8, a28: 0u8, a29: 0u8, a30: 0u8, a31: 0u8 },
+        is_global: true,
+    },
+    state: Ascii32 { a0: 0u8, a1: 0u8, a2: 0u8, a3: 0u8, a4: 0u8, a5: 0u8, a6: 0u8, a7: 0u8, a8: 0u8, a9: 0u8, a10: 0u8, a11: 0u8, a12: 0u8, a13: 0u8, a14: 0u8, a15: 0u8, a16: 0u8, a17: 0u8, a18: 0u8, a19: 0u8, a20: 0u8, a21: 0u8, a22: 0u8, a23: 0u8, a24: 0u8, a25: 0u8, a26: 0u8, a27: 0u8, a28: 0u8, a29: 0u8, a30: 0u8, a31: 0u8 },
+};
