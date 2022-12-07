@@ -1,7 +1,8 @@
+import ascii32.leo;
+
 // The 'wubby' program.
 program wubby.aleo {
-
-    struct Ascii32 {
+    struct ascii32_string {
         a0: u8,
         a1: u8,
         a2: u8,
@@ -37,20 +38,18 @@ program wubby.aleo {
     }
 
     struct Identifiers {
-        public_registry: bool,
-        collection_id: u128, 
-        parent_element_id: u128, 
-        element_id: u128, 
-        attribute_id: u128
+        id,
+        target_dtd_id,
+        target_id,
     }
 
     struct DomainInstance {
-        name: Ascii32,
+        name: ascii32_string,
     }
 
     struct NamespaceDefinition {
-        name: Ascii32,
-        uri: Ascii32,
+        name: ascii32_string,
+        uri: ascii32_string,
     }
 
     struct NamespaceInstance {
@@ -58,7 +57,7 @@ program wubby.aleo {
     }
 
     struct ElementDefinition {
-        keyword: Ascii32,
+        keyword: ascii32_string,
     }
 
     struct ElementInstance {
@@ -67,13 +66,13 @@ program wubby.aleo {
     }
 
     struct AttributeDefinition {
-        keyword: Ascii32,
+        keyword: ascii32_string,
         is_global: bool,
     }
 
     struct AttributeInstance {
         attribute: AttributeDefinition,
-        state: Ascii32,
+        state: ascii32_string,
     }
 
     record Domain {
