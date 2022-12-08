@@ -1,6 +1,10 @@
 // The program input for wubby/src/main.leo
 
 [main]
+
+[publish]
+
+[create_public_string_inside_element]
 public identifiers: Identifiers = Identifiers { public_registry: true, collection_id: 0u128, parent_element_id: 0u128, element_id: 0u128, attribute_id: 0u128 };
 public domain: DomainInstance = DomainInstance { 
     name: ascii32_string { a0: 119u8, a1: 117u8, a2: 98u8, a3: 98u8, a4: 121u8, a5: 0u8, a6: 0u8, a7: 0u8, a8: 0u8, a9: 0u8, a10: 0u8, a11: 0u8, a12: 0u8, a13: 0u8, a14: 0u8, a15: 0u8, a16: 0u8, a17: 0u8, a18: 0u8, a19: 0u8, a20: 0u8, a21: 0u8, a22: 0u8, a23: 0u8, a24: 0u8, a25: 0u8, a26: 0u8, a27: 0u8, a28: 0u8, a29: 0u8, a30: 0u8, a31: 0u8 },
@@ -24,3 +28,7 @@ public attribute: AttributeInstance = AttributeInstance {
     },
     state: ascii32_string { a0: 0u8, a1: 0u8, a2: 0u8, a3: 0u8, a4: 0u8, a5: 0u8, a6: 0u8, a7: 0u8, a8: 0u8, a9: 0u8, a10: 0u8, a11: 0u8, a12: 0u8, a13: 0u8, a14: 0u8, a15: 0u8, a16: 0u8, a17: 0u8, a18: 0u8, a19: 0u8, a20: 0u8, a21: 0u8, a22: 0u8, a23: 0u8, a24: 0u8, a25: 0u8, a26: 0u8, a27: 0u8, a28: 0u8, a29: 0u8, a30: 0u8, a31: 0u8 },
 };
+
+[create_string_inside_element]
+
+[create_public_element_for_collection]

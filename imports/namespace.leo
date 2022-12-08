@@ -1,6 +1,7 @@
 // The 'namespace' program.
 program namespace.aleo {
-    struct ascii32_encoding {
+
+    struct NamespaceBytes32 {
         a0: u8,
         a1: u8,
         a2: u8,
@@ -36,8 +37,8 @@ program namespace.aleo {
     }
 
     struct NamespaceDefinition {
-        name: ascii32_encoding,
-        uri: ascii32_encoding,
+        name: NamespaceBytes32,
+        uri: NamespaceBytes32,
     }
 
     struct NamespaceInstance {
@@ -47,21 +48,18 @@ program namespace.aleo {
     record Namespace {
         owner: address,
         gates: u64,
+        id: u64,
         data: NamespaceInstance,
     }
 
     mapping public_namespaces: address => u64;
-    
-    transition create_public_namespace(data: NamespaceInstance) -> public Namespace {
-        assert(valid_ascii32_encoding(data));
+
+    transition register_namespace(data: NamespaceInstance) -> public Namespace {
         return Namespace {
             owner: self.caller,
             gates: 0u64,
+            id: 0u64,
             data
-        } then finalize(self.caller, 1u64);
-    }
-
-    finalize create_public_namespace(caller: address, record_count: u64) {
-        increment(public_namespaces, caller, record_count);
+        };
     }
 }
