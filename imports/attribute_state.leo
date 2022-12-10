@@ -1,47 +1,24 @@
 // The 'attribute_state' program.
 program attribute_state.aleo {
 
-    struct AttributeStateBytes16 {
-        a0: u8,
-        a1: u8,
-        a2: u8,
-        a3: u8,
-        a4: u8,
-        a5: u8,
-        a6: u8,
-        a7: u8,
-        a8: u8,
-        a9: u8,
-        a10: u8,
-        a11: u8,
-        a12: u8,
-        a13: u8,
-        a14: u8,
-        a15: u8,
-    }
-    
-    struct AttributeStateDefinition {
-        keyword: AttributeStateBytes16,
-    }
-
-    struct AttributeStateInstance {
-        attribute: AttributeStateDefinition,
-    }
-
     record AttributeState {
         owner: address,
         gates: u64,
+        // DTD: AttributeStateDefinition
+        keyword: u64,
+        // AttributeStateInstance
         namespace_id: u64,
         collection_id: u64,
         id: u64,
         target_id: u64,
-        data: AttributeStateInstance,
+        is_freetext: bool,
+        freetext: u64,
     }
 
     mapping attribute_state_registry: address => u64;
     mapping public_attribute_states: address => u64;
 
-    transition register_attribute_state(data: AttributeStateInstance) -> public AttributeState {
+    transition register_attribute_state(keyword: u64, is_freetext: bool, freetext: u64) -> public AttributeState {
         return AttributeState {
             owner: self.caller,
             gates: 0u64,
@@ -49,7 +26,9 @@ program attribute_state.aleo {
             collection_id: 0u64,
             id: 0u64,
             target_id: 0u64,
-            data,
+            keyword,
+            is_freetext,
+            freetext,
         } then finalize(self.caller, 1u64);
     }
 
@@ -57,7 +36,7 @@ program attribute_state.aleo {
         increment(attribute_state_registry, caller, records);
     }
 
-    transition create_public_attribute_state(data: AttributeStateInstance) -> public AttributeState {
+    transition create_public_attribute_state(keyword: u64, is_freetext: bool, freetext: u64) -> public AttributeState {
         return AttributeState {
             owner: self.caller,
             gates: 0u64,
@@ -65,7 +44,9 @@ program attribute_state.aleo {
             collection_id: 0u64,
             id: 0u64,
             target_id: 0u64,
-            data,
+            keyword,
+            is_freetext,
+            freetext,
         } then finalize(self.caller, 1u64);
     }
 
@@ -73,7 +54,7 @@ program attribute_state.aleo {
         increment(public_attribute_states, caller, records);
     }
 
-    transition create_attribute_state(data: AttributeStateInstance) -> private AttributeState {
+    transition create_attribute_state(keyword: u64, is_freetext: bool, freetext: u64) -> AttributeState {
         return AttributeState {
             owner: self.caller,
             gates: 0u64,
@@ -81,20 +62,44 @@ program attribute_state.aleo {
             collection_id: 0u64,
             id: 0u64,
             target_id: 0u64,
-            data,
+            keyword,
+            is_freetext,
+            freetext,
         };
     }
 
-    transition sequence_attribute_state(collection_id: u64, id: u64, target_id: u64, attribute_state: AttributeState) -> AttributeState {
-        // assert(valid_utf8_encoding(data));
+    transition sequence_attribute_state(collection_id: u64, id: u64, attribute_state: AttributeState) -> AttributeState {
+        // assert(attribute_state.namespace == 0u64);
+        // assert(attribute_state.collection_id == 0u64);
+        // assert(attribute_state.id == 0u64);
+        // assert(attribute_state.target_id == 0u64);
+        // assert(validate_schema(data));
         return AttributeState {
             owner: attribute_state.owner,
             gates: attribute_state.gates,
             namespace_id: attribute_state.namespace_id,
             collection_id,
             id,
+            target_id: 0u64,
+            keyword: attribute_state.keyword,
+            is_freetext: attribute_state.is_freetext,
+            freetext: attribute_state.freetext,
+        };
+    }
+
+    transition assign_to_attribute(target_id: u64, attribute_state: AttributeState) -> AttributeState {
+        // assert(attribute_state.namespace == 0u64);
+        // assert(attribute_state.collection_id != 0u64);
+        return AttributeState {
+            owner: attribute_state.owner,
+            gates: attribute_state.gates,
+            namespace_id: attribute_state.namespace_id,
+            collection_id: attribute_state.collection_id,
+            id: attribute_state.id,
             target_id,
-            data: attribute_state.data,
+            keyword: attribute_state.keyword,
+            is_freetext: attribute_state.is_freetext,
+            freetext: attribute_state.freetext,
         };
     }
 }

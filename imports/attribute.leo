@@ -18,6 +18,16 @@ program attribute.aleo {
     mapping attribute_registry: address => u64;
     mapping public_attributes: address => u64;
 
+    transition get_attribute_id(attribute: Attribute) -> (u64, Attribute) {
+        let id: u64 = attribute.id;
+        if (id == 0u64) {
+            return (0u64, attribute);
+        }
+        else {
+            return (id, attribute);
+        }
+    }
+
     transition register_attribute(keyword: u64, is_global: bool, state: u64) -> public Attribute {
         return Attribute {
             owner: self.caller,
