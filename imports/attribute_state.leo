@@ -1,7 +1,7 @@
 // The 'attribute_state' program.
 program attribute_state.aleo {
 
-    struct AttributeStateBytes32 {
+    struct AttributeStateBytes16 {
         a0: u8,
         a1: u8,
         a2: u8,
@@ -18,26 +18,10 @@ program attribute_state.aleo {
         a13: u8,
         a14: u8,
         a15: u8,
-        a16: u8,
-        a17: u8,
-        a18: u8,
-        a19: u8,
-        a20: u8,
-        a21: u8,
-        a22: u8,
-        a23: u8,
-        a24: u8,
-        a25: u8,
-        a26: u8,
-        a27: u8,
-        a28: u8,
-        a29: u8,
-        a30: u8,
-        a31: u8,
     }
     
     struct AttributeStateDefinition {
-        keyword: AttributeStateBytes32,
+        keyword: AttributeStateBytes16,
     }
 
     struct AttributeStateInstance {

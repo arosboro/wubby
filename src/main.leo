@@ -1,4 +1,4 @@
-import utf_8_bytes32.leo;
+import utf_8_bytes16.leo;
 import namespace.leo;
 import element.leo;
 import attribute.leo;
@@ -10,6 +10,7 @@ program wubby.aleo {
     // Collection data structures
 
     struct Class {
+        is_data_type_definition: bool,
         is_dapp: bool,
         is_dapp_template: bool,
         is_mixin: bool,
@@ -17,16 +18,8 @@ program wubby.aleo {
         is_operation: bool,
     }
 
-    struct DTDClass {
-        utf8_32s: bool,
-        elements: bool,
-        attributes: bool,
-        attribute_states: bool,
-        domains: bool,
-    }
-
     struct DTDInstanceCount {
-        utf_8_bytes32s: u64
+        utf_8_bytes16s: u64
         elements: u64,
         attributes: u64,
         attribute_states: u64,
@@ -49,112 +42,176 @@ program wubby.aleo {
     mapping themes: address => u64;
     mapping operations: address => u64;
 
-    function increment_dtd_sequence(class: DTDClass, sequence: DTDInstanceCount) -> DTDInstanceCount {
-        let utf_8_bytes32s: u64 = sequence.utf_8_bytes32s;
-        let elements: u64 = sequence.elements;
-        let attributes: u64 = sequence.attributes;
-        let attribute_states: u64 = sequence.attribute_states;
-        let domains: u64 = sequence.domains;
-        if (class.utf8_32s) {
-            utf_8_bytes32s = utf_8_bytes32s + 1u64;
-        }
-        if (class.elements) {
-            elements = elements + 1u64;
-        }
-        if (class.attributes) {
-            attributes = attributes + 1u64;
-        }
-        if (class.attribute_states) {
-            attribute_states = attribute_states + 1u64;
-        }
-        if (class.domains) {
-            domains = domains + 1u64;
-        }
-        return DTDInstanceCount {
-            utf_8_bytes32s,
-            elements,
-            attributes,
-            attribute_states,
-            domains,
+    // Make the first collection to be used as a genisis collection.
+    transition setup(name: utf_8_bytes16.leo/UTF8Bytes16.record, uri32_1: utf_8_bytes16.leo/UTF8Bytes16.record, uri32_2: utf_8_bytes16.leo/UTF8Bytes16.record) -> (Collection, namespace.leo/Namespace.record, domain.leo/Domain.record) {
+        // Sequence Data
+        let public_registry: bool = true;
+        let id: u64 = 0u64;
+        let class: Class = Class {
+            is_data_type_definition: true,
+            is_dapp: false,
+            is_dapp_template: false,
+            is_mixin: false,
+            is_theme: false,
+            is_operation: false,
         };
+        let sequence_utf_8_bytes16s: u64 = 0u64;
+        let sequence_elements: u64 = 0u64;
+        let sequence_attributes: u64 = 0u64;
+        let sequence_attribute_states: u64 = 0u64;
+        let sequence_domains: u64 = 0u64;
+        let name_id: u64 = sequence_utf_8_bytes16s;
+        let sequenced_name: UTF8Bytes16 = utf_8_bytes16.leo/sequence_utf_8_bytes16(id, name_id, name);
+        sequence_utf_8_bytes16s = sequence_utf_8_bytes16s + 1u64;
+        let uri32_1_id: u64 = sequence_utf_8_bytes16s;
+        let sequenced_uri32_1: UTF8Bytes16 = utf_8_bytes16.leo/sequence_utf_8_bytes16(id, uri32_1_id, uri32_1);
+        sequence_utf_8_bytes16s = sequence_utf_8_bytes16s + 1u64;
+        let uri32_2_id: u64 = sequence_utf_8_bytes16s;
+        let sequenced_uri32_2: UTF8Bytes16 = utf_8_bytes16.leo/sequence_utf_8_bytes16(id, uri32_2_id, uri32_2);
+        sequence_utf_8_bytes16s = sequence_utf_8_bytes16s + 1u64;
+        // Create Public Namespace
+        let public_namespace: Namespace = namespace.leo/register_namespace(name_id, uri32_1_id, uri32_2_id);
+        // Create Domain
+        let domain_id: u64 = sequence_domains;
+        let domain: Domain = domain.leo/register_public_domain(name_id);
+        let sequenced_domain: Domain = domain.leo/sequence_domain(id, domain_id, domain);
+        sequence_domains = sequence_domains + 1u64;
+        let sequence: DTDInstanceCount = DTDInstanceCount {
+            utf_8_bytes16s: sequence_utf_8_bytes16s,
+            elements: sequence_elements,
+            attributes: sequence_attributes,
+            attribute_states: sequence_attribute_states,
+            domains: sequence_domains,
+        };
+        return (Collection {
+            owner: self.caller,
+            gates: 0u64,
+            public_registry,
+            id,
+            domain_id,
+            class,
+            sequence,
+        }, public_namespace, sequenced_domain);
     }
+
 
     // Create Public String
-    transition public_utf8_to_element(collection: Collection, utf8_bytes32: utf_8_bytes32.leo/UTF8Bytes32.record, element: element.leo/Element.record) -> (utf_8_bytes32.leo/UTF8Bytes32.record, Collection) {
+
+    // Assign Public String to Element
+    transition public_utf8_to_element(collection: Collection, parent: element.leo/Element.record, child: utf_8_bytes16.leo/UTF8Bytes16.record) -> (utf_8_bytes16.leo/UTF8Bytes16.record, element.leo/Element.record, Collection) {
         // assert(!element.has_children);
-        let id: u64 = collection.sequence.utf_8_bytes32s;
-        let class: DTDClass = DTDClass {
-            utf8_32s: true,
-            elements: false,
-            attributes: false,
-            attribute_states: false,
-            domains: false,
-        };
-        let counts: DTDInstanceCount = increment_dtd_sequence(class, collection.sequence);
-        let target_id: u64 = element.id;
-        return (utf_8_bytes32.leo/sequence_utf_8_bytes32(collection.id, id, target_id, utf8_bytes32), Collection {
+        let sequences: DTDInstanceCount = collection.sequence;
+        let id: u64 = sequences.utf_8_bytes16s;
+        let parent_tuple: (u64, Element) = element.leo/get_element_id(parent);
+        return (utf_8_bytes16.leo/assign_and_sequence_to_element(collection.id, id, child, parent_tuple.0), parent_tuple.1, Collection {
             owner: collection.owner,
             gates: collection.gates,
             public_registry: collection.public_registry,
             id: collection.id,
             domain_id: collection.domain_id,
             class: collection.class,
-            sequence: counts,
+            sequence: DTDInstanceCount {
+                utf_8_bytes16s: sequences.utf_8_bytes16s + 1u64,
+                elements: sequences.elements,
+                attributes: sequences.attributes,
+                attribute_states: sequences.attribute_states,
+                domains: sequences.domains,
+            }
         });
     }
 
-    // Create String
-    transition utf8_to_element(collection: Collection, utf8_bytes32: utf_8_bytes32.leo/UTF8Bytes32.record, element: element.leo/Element.record,) -> (utf_8_bytes32.leo/UTF8Bytes32.record, Collection) {
-        // assert(element.is_empty == true);
-        let id: u64 = collection.sequence.utf_8_bytes32s;
-        let class: DTDClass = DTDClass {
-            utf8_32s: true,
-            elements: false,
-            attributes: false,
-            attribute_states: false,
-            domains: false,
-        };
-        let counts: DTDInstanceCount = increment_dtd_sequence(class, collection.sequence);
-        let target_id: u64 = element.id;
-        return (utf_8_bytes32.leo/sequence_utf_8_bytes32(collection.id, id, target_id, utf8_bytes32), Collection {
+    // Assign String to Selement
+    transition utf8_to_element(collection: Collection, parent: element.leo/Element.record, child: utf_8_bytes16.leo/UTF8Bytes16.record) -> (utf_8_bytes16.leo/UTF8Bytes16.record, element.leo/Element.record, Collection) {
+        // assert(!element.has_children);
+        let sequences: DTDInstanceCount = collection.sequence;
+        let id: u64 = sequences.utf_8_bytes16s;
+        let parent_tuple: (u64, Element) = element.leo/get_element_id(parent);
+        return (utf_8_bytes16.leo/assign_and_sequence_to_element(collection.id, id, child, parent_tuple.0), parent_tuple.1, Collection {
             owner: collection.owner,
             gates: collection.gates,
             public_registry: collection.public_registry,
             id: collection.id,
             domain_id: collection.domain_id,
             class: collection.class,
-            sequence: counts,
+            sequence: DTDInstanceCount {
+                utf_8_bytes16s: sequences.utf_8_bytes16s + 1u64,
+                elements: sequences.elements,
+                attributes: sequences.attributes,
+                attribute_states: sequences.attribute_states,
+                domains: sequences.domains,
+            }
         });
     }
 
-    // Create Public Namespace
-
-    // Create Public Element
-    transition public_element_to_element(collection: Collection, element: element.leo/Element.record, target: element.leo/Element.record) -> (element.leo/Element.record, Collection) {
-        // assert(element.data.no_children == true);
-        let id: u64 = collection.sequence.elements;
-        let class: DTDClass = DTDClass {
-            utf8_32s: false,
-            elements: true,
-            attributes: false,
-            attribute_states: false,
-            domains: false,
-        };
-        let counts: DTDInstanceCount = increment_dtd_sequence(class, collection.sequence);
-        return (element.leo/sequence_element(collection.id, id, element, target), Collection {
+    // Assign Public Element to Element
+    transition public_element_to_element(collection: Collection, parent: element.leo/Element.record, child: element.leo/Element.record) -> (element.leo/Element.record, Collection) {
+        // assert(element.data.no_children);
+        let sequences: DTDInstanceCount = collection.sequence;
+        let id: u64 = sequences.elements;
+        let sequenced_child: Element = element.leo/sequence_element(collection.id, id, child);
+        return (element.leo/assign_element_to_parent(sequenced_child, parent), Collection {
             owner: collection.owner,
             gates: collection.gates,
             public_registry: collection.public_registry,
             id: collection.id,
             domain_id: collection.domain_id,
             class: collection.class,
-            sequence: counts,
+            sequence: DTDInstanceCount {
+                utf_8_bytes16s: sequences.utf_8_bytes16s,
+                elements: sequences.elements + 1u64,
+                attributes: sequences.attributes,
+                attribute_states: sequences.attribute_states,
+                domains: sequences.domains,
+            }
         });
     }
 
-    // Create Element
+    // Assign Element to Element
+    transition element_to_element(collection: Collection, parent: element.leo/Element.record, child: element.leo/Element.record) -> (element.leo/Element.record, Collection) {
+        // assert(element.data.no_children);
+        let sequences: DTDInstanceCount = collection.sequence;
+        let id: u64 = sequences.elements;
+        let sequenced_child: Element = element.leo/sequence_element(collection.id, id, child);
+        return (element.leo/assign_element_to_parent(sequenced_child, parent), Collection {
+            owner: collection.owner,
+            gates: collection.gates,
+            public_registry: collection.public_registry,
+            id: collection.id,
+            domain_id: collection.domain_id,
+            class: collection.class,
+            sequence: DTDInstanceCount {
+                utf_8_bytes16s: sequences.utf_8_bytes16s,
+                elements: sequences.elements + 1u64,
+                attributes: sequences.attributes,
+                attribute_states: sequences.attribute_states,
+                domains: sequences.domains,
+            }
+        });
+    }
 
-    // Create Public Attribute
+    // Assign Public Attribute to Element
+    transition public_attribute_to_element(collection: Collection, parent: element.leo/Element.record, child: attribute.leo/Attribute.record) -> (attribute.leo/Attribute.record, Collection) {
+        // assert(element.data.no_children);
+        let sequences: DTDInstanceCount = collection.sequence;
+        let id: u64 = sequences.attributes;
+        let sequenced_child: Attribute = attribute.leo/sequence_attribute(collection.id, id, child);
+        let target_tuple: (u64, Element) = element.leo/get_element_id(parent);
+        return (attribute.leo/assign_attribute_to_parent(target_tuple.0, sequenced_child), Collection {
+            owner: collection.owner,
+            gates: collection.gates,
+            public_registry: collection.public_registry,
+            id: collection.id,
+            domain_id: collection.domain_id,
+            class: collection.class,
+            sequence: DTDInstanceCount {
+                utf_8_bytes16s: sequences.utf_8_bytes16s,
+                elements: sequences.elements + 1u64,
+                attributes: sequences.attributes,
+                attribute_states: sequences.attribute_states,
+                domains: sequences.domains,
+            }
+        });
+    }
 
     // Create Attribute
 
@@ -175,7 +232,7 @@ program wubby.aleo {
             domain_id: 0u64,
             class,
             sequence: DTDInstanceCount {
-                utf_8_bytes32s: 0u64,
+                utf_8_bytes16s: 0u64,
                 elements: 0u64,
                 attributes: 0u64,
                 attribute_states: 0u64,
