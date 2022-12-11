@@ -1,13 +1,6 @@
 // The 'element' program.
 program element.aleo {
 
-    struct ElementInstance {
-        is_root: bool,
-        attribute_counter: u64,
-        has_children: bool,
-        content_id: u64,
-    }
-
     record Element {
         owner: address,
         gates: u64,
@@ -37,7 +30,7 @@ program element.aleo {
         }
     }
 
-    transition register_element(keyword: u64, data: ElementInstance) -> public Element {
+    transition register_element(keyword: u64, is_root: bool, attribute_counter: u64, has_children: bool, content_id: u64) -> public Element {
         // assert(validate_schema(data));
         return Element {
             owner: self.caller,
@@ -47,10 +40,10 @@ program element.aleo {
             id: 0u64,
             target_id: 0u64,
             keyword,
-            is_root: data.is_root,
-            attribute_counter: data.attribute_counter,
-            has_children: data.has_children,
-            content_id: data.content_id,
+            is_root,
+            attribute_counter,
+            has_children,
+            content_id,
         } then finalize(self.caller, 1u64);
     }
 
@@ -58,7 +51,7 @@ program element.aleo {
         increment(element_registry, caller, record_count);
     }
 
-    transition create_public_element(dtd: Element, data: ElementInstance) -> public Element {
+    transition create_public_element(keyword: u64, is_root: bool, attribute_counter: u64, has_children: bool, content_id: u64) -> public Element {
         // assert(validate_schema(data));
         return Element {
             owner: self.caller,
@@ -67,11 +60,11 @@ program element.aleo {
             collection_id: 0u64,
             id: 0u64,
             target_id: 0u64,
-            keyword: dtd.keyword,
-            is_root: data.is_root,
-            attribute_counter: data.attribute_counter,
-            has_children: data.has_children,
-            content_id: data.content_id,
+            keyword,
+            is_root,
+            attribute_counter,
+            has_children,
+            content_id,
         } then finalize(self.caller, 1u64);
     }
 
@@ -79,7 +72,7 @@ program element.aleo {
         increment(public_elements, caller, record_count);
     }
 
-    transition create_element(dtd: Element, data: ElementInstance) -> Element {
+    transition create_element(keyword: u64, is_root: bool, attribute_counter: u64, has_children: bool, content_id: u64) -> Element {
         // assert(validate_schema(data));
         return Element {
             owner: self.caller,
@@ -88,11 +81,11 @@ program element.aleo {
             collection_id: 0u64,
             id: 0u64,
             target_id: 0u64,
-            keyword: dtd.keyword,
-            is_root: data.is_root,
-            attribute_counter: data.attribute_counter,
-            has_children: data.has_children,
-            content_id: data.content_id,
+            keyword,
+            is_root,
+            attribute_counter,
+            has_children,
+            content_id,
         };
     }
 
