@@ -25,6 +25,7 @@ program namespace.aleo {
     }
 
     finalize register_namespace(caller: address, records: u64) {
-        increment(public_namespaces, caller, records);
+        let count: u64 = Mapping::get_or_use(public_namespaces, caller, 0u64);
+        Mapping::set(public_namespaces, caller, count + records);
     }
 }

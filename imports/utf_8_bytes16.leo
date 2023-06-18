@@ -170,7 +170,8 @@ program utf_8_bytes16.aleo {
     }
 
     finalize create_public_utf_8_bytes16(caller: address, record_count: u64) {
-        increment(public_utf8_bytes16, caller, record_count);
+        let count: u64 = Mapping::get_or_use(public_utf8_bytes16, caller, 0u64);
+        Mapping::set(public_utf8_bytes16, caller, count + record_count);
     }
     
     transition create_utf_8_bytes16() -> UTF8Bytes16 {

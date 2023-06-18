@@ -48,7 +48,8 @@ program element.aleo {
     }
 
     finalize register_element(caller: address, record_count: u64) {
-        increment(element_registry, caller, record_count);
+        let count: u64 = Mapping::get_or_use(element_registry, caller, 0u64);
+        Mapping::set(element_registry, caller, count + record_count);
     }
 
     transition create_public_element(keyword: u64, is_root: bool, attribute_counter: u64, has_children: bool, content_id: u64) -> public Element {
@@ -69,7 +70,8 @@ program element.aleo {
     }
 
     finalize create_public_element(caller: address, record_count: u64) {
-        increment(public_elements, caller, record_count);
+        let count: u64 = Mapping::get_or_use(element_registry, caller, 0u64);
+        Mapping::set(element_registry, caller, count + record_count);
     }
 
     transition create_element(keyword: u64, is_root: bool, attribute_counter: u64, has_children: bool, content_id: u64) -> Element {
