@@ -1,5 +1,5 @@
-// The 'utf8' program.
-program utf8.aleo {
+// The 'utf_8_bytes32' program.
+program utf_8_bytes32.aleo {
     
     struct UTF8Encoding32 {
         a0: u8,
@@ -47,7 +47,7 @@ program utf8.aleo {
 
     mapping public_utf8_bytes32: address => u64;
     
-    transition create_public_utf8(data: UTF8Encoding32) -> public UTF8Bytes32 {
+    transition create_public_utf_8_bytes32(data: UTF8Encoding32) -> public UTF8Bytes32 {
         // assert(valid_utf8_encoding(data));
         return UTF8Bytes32 {
             owner: self.caller,
@@ -59,12 +59,11 @@ program utf8.aleo {
         } then finalize(self.caller, 1u64);
     }
 
-    finalize create_public_utf8(caller: address, record_count: u64) {
-        let count: u64 = Mapping::get_or_use(public_utf8_bytes32, caller, 0u64);
-        Mapping::set(public_utf8_bytes32, caller, count + record_count);
+    finalize create_public_utf_8_bytes32(caller: address, record_count: u64) {
+        increment(public_utf8_bytes32, caller, record_count);
     }
     
-    transition create_utf8(data: UTF8Encoding32) -> UTF8Bytes32 {
+    transition create_utf_8_bytes32(data: UTF8Encoding32) -> UTF8Bytes32 {
         // assert(valid_utf8_encoding(data));
         return UTF8Bytes32 {
             owner: self.caller,
@@ -76,15 +75,15 @@ program utf8.aleo {
         };
     }
 
-    transition sequence_utf8(collection_id: u64, id: u64, target_id: u64, utf8: UTF8Bytes32) -> UTF8Bytes32 {
+    transition sequence_utf_8_bytes32(collection_id: u64, id: u64, target_id: u64, utf_8_bytes32: UTF8Bytes32) -> UTF8Bytes32 {
         // assert(valid_utf8_encoding(data));
         return UTF8Bytes32 {
-            owner: utf8.owner,
-            gates: utf8.gates,
+            owner: utf_8_bytes32.owner,
+            gates: utf_8_bytes32.gates,
             collection_id,
             id,
             target_id,
-            data: utf8.data,
+            data: utf_8_bytes32.data,
         };
     }
 

@@ -108,8 +108,7 @@ program attribute.aleo {
     }
 
     finalize register_attribute(caller: address, record_count: u64) {
-        let count: u64 = Mapping::get_or_use(attribute_registry, caller, 0u64);
-        Mapping::set(attribute_registry, caller, count + record_count);
+        increment(attribute_registry, caller, record_count);
     }
 
     transition create_public_attribute(data: AttributeInstance) -> public Attribute {
@@ -125,8 +124,7 @@ program attribute.aleo {
     }
 
     finalize create_public_attribute(caller: address, records: u64) {
-        let count: u64 = Mapping::get_or_use(public_attributes, caller, 0u64);
-        Mapping::set(public_attributes, caller, count + records);
+        increment(public_attributes, caller, records);
     }
 
     transition create_attribute(data: AttributeInstance) -> private Attribute {
