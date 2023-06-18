@@ -66,7 +66,8 @@ program domain.aleo {
     }
 
     finalize register_public_domain(caller: address, records: u64) {
-        increment(public_domains, caller, records);
+        let count: u64 = Mapping::get_or_use(public_domains, caller, 0u64);
+        Mapping::set(public_domains, caller, count + records);
     }
 
     transition register_domain(data: DomainInstance) -> public Domain {

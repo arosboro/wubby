@@ -1,4 +1,4 @@
-import utf_8_bytes32.leo;
+import utf8.leo;
 import namespace.leo;
 import element.leo;
 import attribute.leo;
@@ -18,7 +18,7 @@ program wubby.aleo {
     }
 
     struct DTDClass {
-        utf8_32s: bool,
+        utf8_bytes32: bool,
         elements: bool,
         attributes: bool,
         attribute_states: bool,
@@ -26,7 +26,7 @@ program wubby.aleo {
     }
 
     struct DTDInstanceCount {
-        utf_8_bytes32s: u64
+        utf8_bytes32: u64,
         elements: u64,
         attributes: u64,
         attribute_states: u64,
@@ -50,13 +50,13 @@ program wubby.aleo {
     mapping operations: address => u64;
 
     function increment_dtd_sequence(class: DTDClass, sequence: DTDInstanceCount) -> DTDInstanceCount {
-        let utf_8_bytes32s: u64 = sequence.utf_8_bytes32s;
+        let utf8_bytes32: u64 = sequence.utf8_bytes32;
         let elements: u64 = sequence.elements;
         let attributes: u64 = sequence.attributes;
         let attribute_states: u64 = sequence.attribute_states;
         let domains: u64 = sequence.domains;
-        if (class.utf8_32s) {
-            utf_8_bytes32s = utf_8_bytes32s + 1u64;
+        if (class.utf8_bytes32) {
+            utf8_bytes32 = utf8_bytes32 + 1u64;
         }
         if (class.elements) {
             elements = elements + 1u64;
@@ -71,7 +71,7 @@ program wubby.aleo {
             domains = domains + 1u64;
         }
         return DTDInstanceCount {
-            utf_8_bytes32s,
+            utf8_bytes32,
             elements,
             attributes,
             attribute_states,
@@ -80,11 +80,11 @@ program wubby.aleo {
     }
 
     // Create Public String
-    transition public_utf8_to_element(collection: Collection, utf8_bytes32: utf_8_bytes32.leo/UTF8Bytes32.record, element: element.leo/Element.record) -> (utf_8_bytes32.leo/UTF8Bytes32.record, Collection) {
+    transition public_utf8_to_element(collection: Collection, utf8_bytes32: utf8.leo/UTF8Bytes32.record, element: element.leo/Element.record) -> (utf8.leo/UTF8Bytes32.record, Collection) {
         // assert(!element.has_children);
-        let id: u64 = collection.sequence.utf_8_bytes32s;
+        let id: u64 = collection.sequence.utf8_bytes32;
         let class: DTDClass = DTDClass {
-            utf8_32s: true,
+            utf8_bytes32: true,
             elements: false,
             attributes: false,
             attribute_states: false,
@@ -92,7 +92,7 @@ program wubby.aleo {
         };
         let counts: DTDInstanceCount = increment_dtd_sequence(class, collection.sequence);
         let target_id: u64 = element.id;
-        return (utf_8_bytes32.leo/sequence_utf_8_bytes32(collection.id, id, target_id, utf8_bytes32), Collection {
+        return (utf8.leo/sequence_utf8(collection.id, id, target_id, utf8_bytes32), Collection {
             owner: collection.owner,
             gates: collection.gates,
             public_registry: collection.public_registry,
@@ -104,11 +104,11 @@ program wubby.aleo {
     }
 
     // Create String
-    transition utf8_to_element(collection: Collection, utf8_bytes32: utf_8_bytes32.leo/UTF8Bytes32.record, element: element.leo/Element.record,) -> (utf_8_bytes32.leo/UTF8Bytes32.record, Collection) {
+    transition utf8_to_element(collection: Collection, utf8_bytes32: utf8.leo/UTF8Bytes32.record, element: element.leo/Element.record,) -> (utf8.leo/UTF8Bytes32.record, Collection) {
         // assert(element.is_empty == true);
-        let id: u64 = collection.sequence.utf_8_bytes32s;
+        let id: u64 = collection.sequence.utf8_bytes32;
         let class: DTDClass = DTDClass {
-            utf8_32s: true,
+            utf8_bytes32: true,
             elements: false,
             attributes: false,
             attribute_states: false,
@@ -116,7 +116,7 @@ program wubby.aleo {
         };
         let counts: DTDInstanceCount = increment_dtd_sequence(class, collection.sequence);
         let target_id: u64 = element.id;
-        return (utf_8_bytes32.leo/sequence_utf_8_bytes32(collection.id, id, target_id, utf8_bytes32), Collection {
+        return (utf8.leo/sequence_utf8(collection.id, id, target_id, utf8_bytes32), Collection {
             owner: collection.owner,
             gates: collection.gates,
             public_registry: collection.public_registry,
@@ -134,7 +134,7 @@ program wubby.aleo {
         // assert(element.data.no_children == true);
         let id: u64 = collection.sequence.elements;
         let class: DTDClass = DTDClass {
-            utf8_32s: false,
+            utf8_bytes32: false,
             elements: true,
             attributes: false,
             attribute_states: false,
@@ -175,7 +175,7 @@ program wubby.aleo {
             domain_id: 0u64,
             class,
             sequence: DTDInstanceCount {
-                utf_8_bytes32s: 0u64,
+                utf8_bytes32: 0u64,
                 elements: 0u64,
                 attributes: 0u64,
                 attribute_states: 0u64,

@@ -111,7 +111,8 @@ program element.aleo {
     }
 
     finalize register_element(caller: address, record_count: u64) {
-        increment(element_registry, caller, record_count);
+        let count: u64 = Mapping::get_or_use(element_registry, caller, 0u64);
+        Mapping::set(element_registry, caller, count + record_count);
     }
 
     transition create_public_element(data: ElementInstance) -> public Element {
@@ -124,12 +125,13 @@ program element.aleo {
             id: 0u64,
             target_id: 0u64,
             data, 
-        } then finalize(self.caller, 1u64);
+        }; // then finalize(self.caller, 1u64);
     }
 
-    finalize create_public_element(caller: address, record_count: u64) {
-        increment(public_elements, caller, record_count);
-    }
+    // finalize create_public_element(caller: address, record_count: u64) {
+    //     let count: u64 = Mapping::get_or_use(public_elements, caller, 0u64);
+    //     Mapping::set(public_elements, caller, count + record_count);
+    // }
 
     transition create_element(data: ElementInstance) -> Element {
         // assert(validate_schema(data));
