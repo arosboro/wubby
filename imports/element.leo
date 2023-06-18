@@ -109,7 +109,7 @@ program element.aleo {
         };
     }
 
-    transition assign_element_to_parent(parent: Element, child: Element) -> Element {
+    transition assign_element_to_parent(parent: Element, child: Element) -> (Element, Element) {
         // assert(parent.namespace == 0u64);
         // assert(parent.collection_id != 0u64);
         // assert((parent.is_root && parent.id == 0u64 && parent.target_id == 0u64) || (!parent.is_root && parent.id != 0u64));
@@ -117,7 +117,7 @@ program element.aleo {
         // assert(child.collection_id != 0u64);
         // assert(child.id != 0u64);
         // assert(child.target_id == 0u64);
-        return Element {
+        return (Element {
             owner: child.owner,
             gates: child.gates,
             namespace_id: child.namespace_id,
@@ -129,6 +129,19 @@ program element.aleo {
             attribute_counter: child.attribute_counter,
             has_children: child.has_children,
             content_id: child.content_id,
-        };
+        },
+        Element {
+            owner: parent.owner,
+            gates: parent.gates,
+            namespace_id: parent.namespace_id,
+            collection_id: parent.collection_id,
+            id: parent.id,
+            target_id: parent.target_id,
+            keyword: parent.keyword,
+            is_root: parent.is_root,
+            attribute_counter: parent.attribute_counter,
+            has_children: parent.has_children,
+            content_id: parent.content_id,
+        });
     }
 }

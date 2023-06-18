@@ -199,12 +199,13 @@ program wubby.aleo {
     }
 
     // Assign Public Element to Element
-    transition public_element_to_element(collection: Collection, parent: element.leo/Element.record, child: element.leo/Element.record) -> (element.leo/Element.record, Collection) {
+    transition public_element_to_element(collection: Collection, parent: element.leo/Element.record, child: element.leo/Element.record) -> (element.leo/Element.record, element.leo/Element.record, Collection) {
         // assert(element.data.no_children);
         let sequences: DTDInstanceCount = collection.sequence;
         let id: u64 = sequences.elements;
         let sequenced_child: Element = element.leo/sequence_element(collection.id, id, child);
-        return (element.leo/assign_element_to_parent(sequenced_child, parent), Collection {
+        let element_tuple: (Element, Element) = element.leo/assign_element_to_parent(sequenced_child, parent);
+        return (element_tuple.0, element_tuple.1, Collection {
             owner: collection.owner,
             gates: collection.gates,
             public_registry: collection.public_registry,
@@ -222,12 +223,13 @@ program wubby.aleo {
     }
 
     // Assign Element to Element
-    transition element_to_element(collection: Collection, parent: element.leo/Element.record, child: element.leo/Element.record) -> (element.leo/Element.record, Collection) {
+    transition element_to_element(collection: Collection, parent: element.leo/Element.record, child: element.leo/Element.record) -> (element.leo/Element.record, element.leo/Element.record, Collection) {
         // assert(element.data.no_children);
         let sequences: DTDInstanceCount = collection.sequence;
         let id: u64 = sequences.elements;
         let sequenced_child: Element = element.leo/sequence_element(collection.id, id, child);
-        return (element.leo/assign_element_to_parent(sequenced_child, parent), Collection {
+        let element_tuple: (Element, Element) = element.leo/assign_element_to_parent(sequenced_child, parent);
+        return (element_tuple.0, element_tuple.1, Collection {
             owner: collection.owner,
             gates: collection.gates,
             public_registry: collection.public_registry,
