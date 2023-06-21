@@ -1,4 +1,4 @@
-import utf_8_bytes16.leo;
+import utf_8_bytes64.leo;
 import namespace.leo;
 import element.leo;
 import attribute.leo;
@@ -42,7 +42,7 @@ program wubby.aleo {
     }
 
     struct DTDInstanceCount {
-        utf_8_bytes16s: u64
+        utf8s: u64,
         elements: u64,
         attributes: u64,
         attribute_states: u64,
@@ -66,16 +66,13 @@ program wubby.aleo {
     mapping operations: address => u64;
 
     // Create UTF-8 Ascii String
-    transition create_and_saturate_utf8(collection: Collection, value: Utf8Encoding16) -> (utf_8_bytes16.leo/UTF8Bytes16.record, Collection) {
+    transition create_and_saturate_utf8(collection: Collection, value: u64) -> (utf_8_bytes64.leo/UTF8Bytes64.record, Collection) {
         // assert(valid_utf8_encoding(value));
         let sequences: DTDInstanceCount = collection.sequence;
-        let id: u64 = sequences.utf_8_bytes16s;
-        let new_utf8: UTF8Bytes16 = utf_8_bytes16.leo/create_public_utf_8_bytes16();
-        let saturated_utf8_1_4: UTF8Bytes16 = utf_8_bytes16.leo/saturate_utf8_bytes_4(new_utf8, 0u8, value.a0, value.a1, value.a2, value.a3);
-        let saturated_utf8_5_8: UTF8Bytes16 = utf_8_bytes16.leo/saturate_utf8_bytes_4(saturated_utf8_1_4, 4u8, value.a4, value.a5, value.a6, value.a7);
-        let saturated_utf8_9_12: UTF8Bytes16 = utf_8_bytes16.leo/saturate_utf8_bytes_4(saturated_utf8_5_8, 8u8, value.a8, value.a9, value.a10, value.a11);
-        let saturated_utf8_13_16: UTF8Bytes16 = utf_8_bytes16.leo/saturate_utf8_bytes_4(saturated_utf8_9_12, 12u8, value.a12, value.a13, value.a14, value.a15);
-        return (utf_8_bytes16.leo/sequence_utf_8_bytes16(collection.id, id, saturated_utf8_13_16), Collection {
+        let id: u64 = sequences.utf8s;
+        let new_utf8: UTF8Bytes64 = utf_8_bytes64.leo/create_utf_8_bytes64();
+        let saturated_utf8: UTF8Bytes64 = utf_8_bytes64.leo/saturate_utf_8_bytes64(new_utf8, value);
+        return (utf_8_bytes64.leo/sequence_utf_8_bytes64(collection.id, id, saturated_utf8), Collection {
             owner: collection.owner,
             gates: collection.gates,
             public_registry: collection.public_registry,
@@ -83,7 +80,7 @@ program wubby.aleo {
             domain_id: collection.domain_id,
             class: collection.class,
             sequence: DTDInstanceCount {
-                utf_8_bytes16s: sequences.utf_8_bytes16s + 1u64,
+                utf8s: sequences.utf8s + 1u64,
                 elements: sequences.elements,
                 attributes: sequences.attributes,
                 attribute_states: sequences.attribute_states,
@@ -93,21 +90,15 @@ program wubby.aleo {
     }
 
     // Make the first collection to be used as a genisis collection.
-    transition setup_namespace(name: utf_8_bytes16.leo/UTF8Bytes16.record, uri32_0_16: utf_8_bytes16.leo/UTF8Bytes16.record, uri32_17_32: utf_8_bytes16.leo/UTF8Bytes16.record, domain_name: utf_8_bytes16.leo/UTF8Bytes16.record) -> namespace.leo/Namespace.record {
-        let name_id: (u64, UTF8Bytes16) = utf_8_bytes16.leo/get_utf_8_bytes16_id(name);
-        let uri32_0_16_id: (u64, UTF8Bytes16) = utf_8_bytes16.leo/get_utf_8_bytes16_id(uri32_0_16);
-        let uri32_17_32_id: (u64, UTF8Bytes16) = utf_8_bytes16.leo/get_utf_8_bytes16_id(uri32_17_32);
-        return namespace.leo/register_namespace(name_id.0, uri32_0_16_id.0, uri32_17_32_id.0);
+    transition setup_namespace(name: u64, uri: u64) -> namespace.leo/Namespace.record {
+        return namespace.leo/register_namespace(name, uri);
     }
 
     // Create Public Domain
-    transition create_public_domain(collection: Collection, name: utf_8_bytes16.leo/UTF8Bytes16.record, uri32_0_16: utf_8_bytes16.leo/UTF8Bytes16.record, uri32_17_32: utf_8_bytes16.leo/UTF8Bytes16.record) -> (domain.leo/Domain.record, Collection) {
+    transition create_public_domain(collection: Collection, name: u64, uri: u64) -> (domain.leo/Domain.record, Collection) {
         let sequences: DTDInstanceCount = collection.sequence;
         let id: u64 = sequences.domains;
-        let name_id: (u64, UTF8Bytes16) = utf_8_bytes16.leo/get_utf_8_bytes16_id(name);
-        let uri32_0_16_id: (u64, UTF8Bytes16) = utf_8_bytes16.leo/get_utf_8_bytes16_id(uri32_0_16);
-        let uri32_17_32_id: (u64, UTF8Bytes16) = utf_8_bytes16.leo/get_utf_8_bytes16_id(uri32_17_32);
-        let domain: Domain = domain.leo/register_public_domain(name_id.0, uri32_0_16_id.0, uri32_17_32_id.0);
+        let domain: Domain = domain.leo/register_public_domain(name, uri);
         return (domain.leo/sequence_domain(collection.id, id, domain), Collection {
             owner: collection.owner,
             gates: collection.gates,
@@ -116,7 +107,7 @@ program wubby.aleo {
             domain_id: collection.domain_id,
             class: collection.class,
             sequence: DTDInstanceCount {
-                utf_8_bytes16s: sequences.utf_8_bytes16s,
+                utf8s: sequences.utf8s,
                 elements: sequences.elements,
                 attributes: sequences.attributes,
                 attribute_states: sequences.attribute_states,
@@ -126,13 +117,10 @@ program wubby.aleo {
     }
 
     // Create Domain
-    transition create_domain(collection: Collection, name: utf_8_bytes16.leo/UTF8Bytes16.record, uri32_0_16: utf_8_bytes16.leo/UTF8Bytes16.record, uri32_17_32: utf_8_bytes16.leo/UTF8Bytes16.record) -> (domain.leo/Domain.record, Collection) {
+    transition create_domain(collection: Collection, name: u64, uri: u64) -> (domain.leo/Domain.record, Collection) {
         let sequences: DTDInstanceCount = collection.sequence;
         let id: u64 = sequences.domains;
-        let name_id: (u64, UTF8Bytes16) = utf_8_bytes16.leo/get_utf_8_bytes16_id(name);
-        let uri32_0_16_id: (u64, UTF8Bytes16) = utf_8_bytes16.leo/get_utf_8_bytes16_id(uri32_0_16);
-        let uri32_17_32_id: (u64, UTF8Bytes16) = utf_8_bytes16.leo/get_utf_8_bytes16_id(uri32_17_32);
-        let domain: Domain = domain.leo/register_domain(name_id.0, uri32_0_16_id.0, uri32_17_32_id.0);
+        let domain: Domain = domain.leo/register_domain(name, uri);
         return (domain.leo/sequence_domain(collection.id, id, domain), Collection {
             owner: collection.owner,
             gates: collection.gates,
@@ -141,7 +129,7 @@ program wubby.aleo {
             domain_id: collection.domain_id,
             class: collection.class,
             sequence: DTDInstanceCount {
-                utf_8_bytes16s: sequences.utf_8_bytes16s,
+                utf8s: sequences.utf8s,
                 elements: sequences.elements,
                 attributes: sequences.attributes,
                 attribute_states: sequences.attribute_states,
@@ -153,12 +141,12 @@ program wubby.aleo {
     // Create Public String
 
     // Assign Public String to Element
-    transition public_utf8_to_element(collection: Collection, parent: element.leo/Element.record, child: utf_8_bytes16.leo/UTF8Bytes16.record) -> (utf_8_bytes16.leo/UTF8Bytes16.record, element.leo/Element.record, Collection) {
+    transition public_utf8_to_element(collection: Collection, parent: element.leo/Element.record, child: utf_8_bytes64.leo/UTF8Bytes64.record) -> (utf_8_bytes64.leo/UTF8Bytes64.record, element.leo/Element.record, Collection) {
         // assert(!element.has_children);
         let sequences: DTDInstanceCount = collection.sequence;
-        let id: u64 = sequences.utf_8_bytes16s;
+        let id: u64 = sequences.utf8s;
         let parent_tuple: (u64, Element) = element.leo/get_element_id(parent);
-        return (utf_8_bytes16.leo/assign_and_sequence_to_element(collection.id, id, child, parent_tuple.0), parent_tuple.1, Collection {
+        return (utf_8_bytes64.leo/assign_and_sequence_to_element(collection.id, id, child, parent_tuple.0), parent_tuple.1, Collection {
             owner: collection.owner,
             gates: collection.gates,
             public_registry: collection.public_registry,
@@ -166,7 +154,7 @@ program wubby.aleo {
             domain_id: collection.domain_id,
             class: collection.class,
             sequence: DTDInstanceCount {
-                utf_8_bytes16s: sequences.utf_8_bytes16s + 1u64,
+                utf8s: sequences.utf8s + 1u64,
                 elements: sequences.elements,
                 attributes: sequences.attributes,
                 attribute_states: sequences.attribute_states,
@@ -176,12 +164,12 @@ program wubby.aleo {
     }
 
     // Assign String to Selement
-    transition utf8_to_element(collection: Collection, parent: element.leo/Element.record, child: utf_8_bytes16.leo/UTF8Bytes16.record) -> (utf_8_bytes16.leo/UTF8Bytes16.record, element.leo/Element.record, Collection) {
+    transition utf8_to_element(collection: Collection, parent: element.leo/Element.record, child: utf_8_bytes64.leo/UTF8Bytes64.record) -> (utf_8_bytes64.leo/UTF8Bytes64.record, element.leo/Element.record, Collection) {
         // assert(!element.has_children);
         let sequences: DTDInstanceCount = collection.sequence;
-        let id: u64 = sequences.utf_8_bytes16s;
+        let id: u64 = sequences.utf8s;
         let parent_tuple: (u64, Element) = element.leo/get_element_id(parent);
-        return (utf_8_bytes16.leo/assign_and_sequence_to_element(collection.id, id, child, parent_tuple.0), parent_tuple.1, Collection {
+        return (utf_8_bytes64.leo/assign_and_sequence_to_element(collection.id, id, child, parent_tuple.0), parent_tuple.1, Collection {
             owner: collection.owner,
             gates: collection.gates,
             public_registry: collection.public_registry,
@@ -189,7 +177,7 @@ program wubby.aleo {
             domain_id: collection.domain_id,
             class: collection.class,
             sequence: DTDInstanceCount {
-                utf_8_bytes16s: sequences.utf_8_bytes16s + 1u64,
+                utf8s: sequences.utf8s + 1u64,
                 elements: sequences.elements,
                 attributes: sequences.attributes,
                 attribute_states: sequences.attribute_states,
@@ -213,7 +201,7 @@ program wubby.aleo {
             domain_id: collection.domain_id,
             class: collection.class,
             sequence: DTDInstanceCount {
-                utf_8_bytes16s: sequences.utf_8_bytes16s,
+                utf8s: sequences.utf8s,
                 elements: sequences.elements + 1u64,
                 attributes: sequences.attributes,
                 attribute_states: sequences.attribute_states,
@@ -237,7 +225,7 @@ program wubby.aleo {
             domain_id: collection.domain_id,
             class: collection.class,
             sequence: DTDInstanceCount {
-                utf_8_bytes16s: sequences.utf_8_bytes16s,
+                utf8s: sequences.utf8s,
                 elements: sequences.elements + 1u64,
                 attributes: sequences.attributes,
                 attribute_states: sequences.attribute_states,
@@ -261,7 +249,7 @@ program wubby.aleo {
             domain_id: collection.domain_id,
             class: collection.class,
             sequence: DTDInstanceCount {
-                utf_8_bytes16s: sequences.utf_8_bytes16s,
+                utf8s: sequences.utf8s,
                 elements: sequences.elements,
                 attributes: sequences.attributes + 1u64,
                 attribute_states: sequences.attribute_states,
@@ -285,7 +273,7 @@ program wubby.aleo {
             domain_id: collection.domain_id,
             class: collection.class,
             sequence: DTDInstanceCount {
-                utf_8_bytes16s: sequences.utf_8_bytes16s,
+                utf8s: sequences.utf8s,
                 elements: sequences.elements,
                 attributes: sequences.attributes + 1u64,
                 attribute_states: sequences.attribute_states,
@@ -309,7 +297,7 @@ program wubby.aleo {
             domain_id: collection.domain_id,
             class: collection.class,
             sequence: DTDInstanceCount {
-                utf_8_bytes16s: sequences.utf_8_bytes16s,
+                utf8s: sequences.utf8s,
                 elements: sequences.elements,
                 attributes: sequences.attributes,
                 attribute_states: sequences.attribute_states + 1u64,
@@ -333,7 +321,7 @@ program wubby.aleo {
             domain_id: collection.domain_id,
             class: collection.class,
             sequence: DTDInstanceCount {
-                utf_8_bytes16s: sequences.utf_8_bytes16s,
+                utf8s: sequences.utf8s,
                 elements: sequences.elements,
                 attributes: sequences.attributes,
                 attribute_states: sequences.attribute_states + 1u64,
@@ -351,7 +339,7 @@ program wubby.aleo {
             domain_id: 0u64,
             class,
             sequence: DTDInstanceCount {
-                utf_8_bytes16s: 0u64,
+                utf8s: 0u64,
                 elements: 0u64,
                 attributes: 0u64,
                 attribute_states: 0u64,

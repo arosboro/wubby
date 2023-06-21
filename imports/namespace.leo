@@ -7,20 +7,18 @@ program namespace.aleo {
         id: u64,
         // DTD: Namespace
         name: u64,
-        uri32_0_16: u64,
-        uri32_17_32: u64,
+        uri: u64,
     }
 
     mapping public_namespaces: address => u64;
 
-    transition register_namespace(name: u64, uri32_0_16: u64, uri32_17_32: u64) -> public Namespace {
+    transition register_namespace(name: u64, uri: u64) -> public Namespace {
         return Namespace {
             owner: self.caller,
             gates: 0u64,
             id: 0u64,
             name,
-            uri32_0_16,
-            uri32_17_32,
+            uri,
         } then finalize(self.caller, 1u64);
     }
 

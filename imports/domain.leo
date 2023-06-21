@@ -6,8 +6,7 @@ program domain.aleo {
         gates: u64,
         // DTD: DomainDefinition,
         name: u64,
-        uri32_0_16: u64,
-        uri32_17_32: u64,
+        uri: u64,
         // DomainInstance
         id: u64,
         collection_id: u64,
@@ -15,14 +14,13 @@ program domain.aleo {
 
     mapping public_domains: address => u64;
 
-    transition register_public_domain(name: u64, uri32_0_16: u64, uri32_17_32: u64) -> public Domain {
+    transition register_public_domain(name: u64, uri: u64) -> public Domain {
         // assert(valid_domain(data));
         return Domain {
             owner: self.caller,
             gates: 0u64,
             name,
-            uri32_0_16,
-            uri32_17_32,
+            uri,
             id: 0u64,
             collection_id: 0u64,
         } then finalize(self.caller, 1u64);
@@ -33,14 +31,13 @@ program domain.aleo {
         Mapping::set(public_domains, caller, count + records);
     }
 
-    transition register_domain(name: u64, uri32_0_16: u64, uri32_17_32: u64) -> Domain {
+    transition register_domain(name: u64, uri: u64) -> Domain {
         // assert(valid_domain(data));
         return Domain {
             owner: self.caller,
             gates: 0u64,
             name,
-            uri32_0_16,
-            uri32_17_32,
+            uri,
             id: 0u64,
             collection_id: 0u64,
         };
@@ -52,8 +49,7 @@ program domain.aleo {
             owner: domain.owner,
             gates: domain.gates,
             name: domain.name,
-            uri32_0_16: domain.uri32_0_16,
-            uri32_17_32: domain.uri32_17_32,
+            uri: domain.uri,
             id,
             collection_id,
         };
